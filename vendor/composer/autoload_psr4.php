@@ -6,9 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Engine\\Core\\Service\\Database\\' => array($baseDir . '/engine/core/service/database'),
-    'Engine\\Core\\Service\\' => array($baseDir . '/engine/core/service'),
-    'Engine\\Core\\Helper\\' => array($baseDir . '/engine/core/helper'),
-    'Engine\\Core\\Container\\' => array($baseDir . '/engine/core/container'),
-    'Engine\\Core\\' => array($baseDir . '/engine/core'),
+    'engine\\core\\service\\database\\' => array($baseDir . '/engine/core/service/database'),
+    'engine\\core\\service\\' => array($baseDir . '/engine/core/service'),
+    'engine\\core\\helper\\' => array($baseDir . '/engine/core/helper'),
+    'engine\\core\\container\\' => array($baseDir . '/engine/core/container'),
+    'engine\\core\\' => array($baseDir . '/engine/core'),
 );

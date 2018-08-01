@@ -1,55 +1,119 @@
 <?php
 
-namespace Engine\Core\Service;
+namespace engine\core\service;
 
-use Engine\Core\Container\Container;
+use engine\core\container\Container;
 use ReflectionClass;
 
 class ServiceLoader
 {
-    private $configPath = __DIR__.'/../config/';
+    /**
+     * Путь до папки файлов конфигурации
+     * @var string $path
+     */
+    private $path = __DIR__.'/../config';
 
-    private $configFile = 'service';
+    /**
+     * Имя файла конфигурации
+     * @var string $file
+     */
+    private $file = 'service.php';
 
-    private $configExtension = '.php';
+    /**
+     * Полный путь до файла конфигурации
+     * @var $configAddress
+     */
+    public $configAddress;
 
-    public $config = [];
+    /**
+     * Содержимое файла конфигурации
+     * @var $configContent
+     */
+    public $configContent;
 
-    public function getConfig($file = null, $path = null, $extension= null)
+    /**
+     * Устанавливает полный путь до файла конфигурации сервисов
+     * @param null $file Имя файла (установлено по умолчанию)
+     * @param null $path Путь до папки файлов конфигурации (установлен по умолчанию)
+     */
+    public function setConfig($file = null, $path = null)
     {
-        if (empty($file))
-            $file = $this->configFile;
+        if (!empty($file))
+            $this->file = $file;
 
-        if (empty($path))
-            $path = $this->configPath;
+        if (!empty($path))
+            $this->path = $path;
 
-        if (empty($extension))
-            $extension = $this->configExtension;
-
-        $this->config = include $path.$file.$extension;
-
-        return $this->config;
+        $this->configAddress = $this->path.'/'.$this->file;
     }
 
     /**
-     * @param $config
-     * @param Container $container
-     * @throws \ReflectionException
+     * Получает содержимое файла конфигурации сервисов
      */
-    public function initServices($config, $container)
+    private function loadConfig()
     {
-        if (!empty($config)) {
-            foreach ($config as $service) {
-                try {
-                    $oService = new ReflectionClass($service);
-                } catch (\ReflectionException $exception) {
-                    throw new ServiceException('Class ' . $service . ' does not exists');
-                } finally {
-                    /**
-                     * @var Service $oService
-                     */
-                    $oService = new $service($container);
+        $this->configContent = include($this->configAddress);
+    }
+
+    /**
+     * Инициализация сервисов на основе файла конфигурации
+     * @param Container $container Объект DI-контейнера
+     * @throws ServiceException Исключения
+     */
+    public function initServices($container)
+    {
+        if (is_file($this->configAddress)) {
+            $this->loadConfig();
+        } else {
+            throw new ServiceException(
+                '<b>Ошбика инициализации сервисов:</b> Файл конфигурации не существует.'
+            );
+        }
+
+        if (!is_array($this->configContent)) {
+            throw new ServiceException(
+                '<b>Ошбика инициализации сервисов:</b> Файл конфигурации должен содержать массив.'
+            );
+        }
+
+        if (empty($this->configContent)) {
+            throw new ServiceException(
+                '<b>Ошбика инициализации сервисов:</b> Файл конфигурации пуст.'
+            );
+        }
+
+        if (!($container instanceof Container)) {
+            throw new ServiceException(
+                '<b>Ошбика инициализации сервисов:</b> Аргумент $container должен быть экземпляром класса \Engine\Core\Container\Container.'
+            );
+        }
+
+        foreach ($this->configContent as $service) {
+            try {
+                $oService = new ReflectionClass($service);
+
+                if ($oService->isAbstract())
+                    throw new ServiceException(
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> Не должен быть абстрактным.'
+                    );
+
+                if (!$oService->hasMethod('init'))
+                    throw new ServiceException(
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> должен иметь метод "init".'
+                    );
+
+            } catch (\ReflectionException $exception) {
+                throw new ServiceException('<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> не существует.');
+            } finally {
+                /** @var Service $oService */
+                $oService = new $service($container);
+
+                if ($oService instanceof Service) {
                     $oService->init();
+                } else {
+                    throw new ServiceException(
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> не наследуется от класса Service.'
+                    );
                 }
             }
         }

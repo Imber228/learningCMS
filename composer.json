@@ -3,11 +3,11 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Engine\\Core\\": "engine/core",
-            "Engine\\Core\\Container\\": "engine/core/container",
-            "Engine\\Core\\Helper\\": "engine/core/helper",
-            "Engine\\Core\\Service\\": "engine/core/service",
-            "Engine\\Core\\Service\\Database\\": "engine/core/service/database"
+            "engine\\core\\": "engine/core",
+            "engine\\core\\container\\": "engine/core/container",
+            "engine\\core\\helper\\": "engine/core/helper",
+            "engine\\core\\service\\": "engine/core/service",
+            "engine\\core\\service\\database\\": "engine/core/service/database"
         }
     }
 }

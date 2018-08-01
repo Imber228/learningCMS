@@ -1,5 +1,5 @@
 <?php
 
-namespace Engine\Core\Service;
+namespace engine\core\service;
 
 class ServiceException extends \ReflectionException {}

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'Engine\Core\Service\Database\Database'
+    'engine\core\service\database\Database'
 ];

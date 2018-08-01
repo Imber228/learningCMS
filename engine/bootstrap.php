@@ -1,20 +1,18 @@
 <?php
 
-use Engine\Core\Application;
-use Engine\Core\Container\Container;
-use Engine\Core\Service\ServiceLoader;
-
-define('ENGINE_FOLDER', __DIR__);
+use engine\core\Application;
+use engine\core\container\Container;
+use engine\core\service\ServiceLoader;
 
 require_once(__DIR__.'/../vendor/autoload.php');
 
 try {
     $oContainer = new Container();
     $oApplication = new Application($oContainer);
-    $oServiceLoader = new ServiceLoader();
 
-    $arServiceConfig = $oServiceLoader->getConfig();
-    $oServiceLoader->initServices($arServiceConfig, $oContainer);
+    $oServiceLoader = new ServiceLoader();
+    $oServiceLoader->setConfig();
+    $oServiceLoader->initServices($oContainer);
 
     $oApplication->start();
 }

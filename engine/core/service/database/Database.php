@@ -1,13 +1,13 @@
 <?php
 
-namespace Engine\Core\Service\Database;
+namespace engine\core\service\database;
 
-use Engine\Core\Service\Service;
+use engine\core\service\Service;
 
 class Database extends Service
 {
 
-    public $name = 'Database';
+    public $name = 'database';
 
     public function init() {
         $this->container->setContainer($this->name, 'database connection info');
