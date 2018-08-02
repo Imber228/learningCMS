@@ -4,11 +4,16 @@ namespace engine\core\container;
 
 class Container
 {
+    /**
+     * DI-контейнер
+     * @var array
+     */
     private $container = [];
 
     /**
-     * @param null $key
-     * @param null $value
+     * Помещает объект в DI-контейнер с заданным ключом
+     * @param null $key Ключ в DI-контейнере
+     * @param null $value Передаваемый объект
      * @return $this|null
      */
     public function setContainer($key = null, $value = null)
@@ -22,7 +27,8 @@ class Container
     }
 
     /**
-     * @param $key
+     * Возвращает элемент из DI-контейнера по указанному ключу
+     * @param string $key Запрашиваемый ключ в DI-контейнере
      * @return mixed|null
      */
     public function getContainer($key)
@@ -34,7 +40,8 @@ class Container
     }
 
     /**
-     * @param $key
+     * Проверяет на существование ключа в DI-контейнере
+     * @param string $key Запрашиваемый ключ
      * @return bool
      */
     public function existContainer($key)

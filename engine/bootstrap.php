@@ -2,19 +2,14 @@
 
 use engine\core\Application;
 use engine\core\container\Container;
-use engine\core\service\ServiceLoader;
 
 require_once(__DIR__.'/../vendor/autoload.php');
 
 try {
-    $oContainer = new Container();
-    $oApplication = new Application($oContainer);
+    $container = new Container();
+    $application = new Application($container);
 
-    $oServiceLoader = new ServiceLoader();
-    $oServiceLoader->setConfig();
-    $oServiceLoader->initServices($oContainer);
-
-    $oApplication->start();
+    $application->start();
 }
 catch (\Exception $exception) {
     echo $exception->getMessage();

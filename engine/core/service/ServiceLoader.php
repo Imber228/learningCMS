@@ -9,9 +9,9 @@ class ServiceLoader
 {
     /**
      * Путь до папки файлов конфигурации
-     * @var string $path
+     * @var string $folder
      */
-    private $path = __DIR__.'/../config';
+    private $folder = __DIR__.'/../config';
 
     /**
      * Имя файла конфигурации
@@ -21,13 +21,13 @@ class ServiceLoader
 
     /**
      * Полный путь до файла конфигурации
-     * @var $configAddress
+     * @var string $configPath
      */
-    public $configAddress;
+    public $configPath;
 
     /**
      * Содержимое файла конфигурации
-     * @var $configContent
+     * @var array $configContent
      */
     public $configContent;
 
@@ -42,9 +42,9 @@ class ServiceLoader
             $this->file = $file;
 
         if (!empty($path))
-            $this->path = $path;
+            $this->folder = $path;
 
-        $this->configAddress = $this->path.'/'.$this->file;
+        $this->configPath = $this->folder.'/'.$this->file;
     }
 
     /**
@@ -52,7 +52,7 @@ class ServiceLoader
      */
     private function loadConfig()
     {
-        $this->configContent = include($this->configAddress);
+        $this->configContent = include($this->configPath);
     }
 
     /**
@@ -62,7 +62,7 @@ class ServiceLoader
      */
     public function initServices($container)
     {
-        if (is_file($this->configAddress)) {
+        if (is_file($this->configPath)) {
             $this->loadConfig();
         } else {
             throw new ServiceException(
@@ -88,31 +88,33 @@ class ServiceLoader
             );
         }
 
-        foreach ($this->configContent as $service) {
+        foreach ($this->configContent as $namespace) {
             try {
-                $oService = new ReflectionClass($service);
+                $service = new ReflectionClass($namespace);
 
-                if ($oService->isAbstract())
+                if ($service->isAbstract())
                     throw new ServiceException(
-                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> Не должен быть абстрактным.'
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $namespace . '</b> Не должен быть абстрактным.'
                     );
 
-                if (!$oService->hasMethod('init'))
+                if (!$service->hasMethod('init'))
                     throw new ServiceException(
-                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> должен иметь метод "init".'
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $namespace . '</b> должен иметь метод "init".'
                     );
 
             } catch (\ReflectionException $exception) {
-                throw new ServiceException('<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> не существует.');
+                throw new ServiceException('<b>Ошбика инициализации сервисов:</b> Класс <b>' . $namespace . '</b> не существует.');
             } finally {
-                /** @var Service $oService */
-                $oService = new $service($container);
+                /**
+                 * @var Service $service
+                 */
+                $service = new $namespace($container);
 
-                if ($oService instanceof Service) {
-                    $oService->init();
+                if ($service instanceof Service) {
+                    $service->init();
                 } else {
                     throw new ServiceException(
-                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $service . '</b> не наследуется от класса Service.'
+                        '<b>Ошбика инициализации сервисов:</b> Класс <b>' . $namespace . '</b> не наследуется от класса Service.'
                     );
                 }
             }
