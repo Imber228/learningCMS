@@ -10,6 +10,6 @@ class Router extends Service
 
     public function init()
     {
-        $this->container->setContainer($this->name, 'router service');
+        $this->container->setContainer($this->name, $this);
     }
 }

@@ -22,13 +22,15 @@ class Application
         $this->container = $container;
     }
 
+    /**
+     * Запуск приложения
+     */
     public function start()
     {
         $services = new ServiceLoader();
         $services->setConfig();
         $services->initServices($this->container);
 
-        echo 'WORKING!<br>';
         print_r($this->container);
     }
 }
