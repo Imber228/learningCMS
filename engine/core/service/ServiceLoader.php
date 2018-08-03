@@ -11,7 +11,7 @@ class ServiceLoader
      * Путь до папки файлов конфигурации
      * @var string $folder
      */
-    private $folder = __DIR__.'/../config';
+    private $folder = ENGINE_CONFIG_FOLDER;
 
     /**
      * Имя файла конфигурации
@@ -34,15 +34,15 @@ class ServiceLoader
     /**
      * Устанавливает полный путь до файла конфигурации сервисов
      * @param null $file Имя файла (установлено по умолчанию)
-     * @param null $path Путь до папки файлов конфигурации (установлен по умолчанию)
+     * @param null $folder Путь до папки файлов конфигурации (установлен по умолчанию)
      */
-    public function setConfig($file = null, $path = null)
+    public function setConfig($file = null, $folder = null)
     {
         if (!empty($file))
             $this->file = $file;
 
         if (!empty($path))
-            $this->folder = $path;
+            $this->folder = $folder;
 
         $this->configPath = $this->folder.'/'.$this->file;
     }

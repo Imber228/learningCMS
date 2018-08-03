@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'engine\core\service\database\Database',
-    'engine\core\service\router\Router'
+    'engine\core\service\database\Provider',
+    'engine\core\service\router\Provider'
 ];
